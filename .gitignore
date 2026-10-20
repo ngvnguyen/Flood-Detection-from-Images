@@ -1,0 +1,5 @@
+__pycache__/
+.vscode/
+data/
+raw_data/
+fine_tuned_flood_detection_model.keras
