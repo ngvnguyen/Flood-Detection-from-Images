@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FloodLens - kiểm tra ảnh có dấu hiệu ngập bằng AI." />
+    <title>FloodLens — Kiểm tra ảnh ngập</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="FloodLens trang chủ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="img"><path d="M16 4c5.2 5.8 9 10.4 9 15.1A9 9 0 0 1 7 19.1C7 14.4 10.8 9.8 16 4Z"></path><path d="M11.5 20.2c1.2 1.5 2.6 2.2 4.5 2.2" class="mark-line"></path></svg>
+        </span>
+        <span>Flood<span class="brand-accent">Lens</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Điều hướng chính">
+        <a class="nav-link active" href="#checker">Kiểm tra ảnh</a>
+        <a class="nav-link" href="#how-it-works">Cách hoạt động</a>
+        <a class="nav-link" href="#model">Mô hình</a>
+      </nav>
+      <span class="demo-pill"><span class="status-dot"></span> Model API</span>
+    </header>
+
+    <main>
+      <section class="hero" id="checker">
+        <div class="hero-copy">
+          <p class="eyebrow">Image intelligence for safer decisions</p>
+          <h1>Nhìn rõ dấu hiệu ngập trong <em>một bức ảnh.</em></h1>
+          <p class="hero-description">Tải ảnh hiện trường lên để FloodLens phân tích nhanh. Một tín hiệu rõ ràng hơn, trước khi bạn quyết định bước tiếp theo.</p>
+          <div class="trust-row" aria-label="Đặc điểm sản phẩm">
+            <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg> Phân tích nhanh</span>
+            <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg> Dễ hiểu</span>
+            <span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg> Minh bạch</span>
+          </div>
+        </div>
+
+        <div class="checker-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="panel-kicker">01 / Upload</span>
+              <h2>Kiểm tra một ảnh</h2>
+            </div>
+            <span class="file-type">JPG · PNG · JPEG</span>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="region" aria-label="Chọn ảnh để phân tích">
+            <input id="file-input" type="file" accept="image/jpeg,image/png,image/jpg" hidden />
+            <div class="upload-empty" id="upload-empty">
+              <span class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 36 36"><path d="M18 25V8m0 0-6 6m6-6 6 6"></path><path d="M8 22v5a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-5"></path></svg>
+              </span>
+              <strong>Kéo ảnh vào đây</strong>
+              <span>hoặc chọn từ thiết bị</span>
+              <button class="secondary-button" id="choose-button" type="button">Chọn ảnh</button>
+              <small>Tối đa 10 MB</small>
+            </div>
+            <div class="preview-state" id="preview-state" hidden>
+              <img id="preview-image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Ảnh đã chọn để phân tích" />
+              <div class="preview-overlay">
+                <span class="preview-badge">Ảnh đã sẵn sàng</span>
+                <button class="icon-button" id="remove-button" type="button" aria-label="Xóa ảnh">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="file-error" id="file-error" role="alert" hidden></p>
+          <button class="primary-button analyze-button" id="analyze-button" type="button" disabled>
+            <span class="button-label">Phân tích ảnh <span aria-hidden="true">→</span></span>
+            <span class="button-loading" hidden><span class="spinner"></span> Đang phân tích…</span>
+          </button>
+          <p class="privacy-note"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 13 4v3.8c0 3-2 5.4-5 6.2-3-.8-5-3.2-5-6.2V4l5-2Z"></path><path d="m5.8 8 1.4 1.4L10.5 6"></path></svg> Ảnh chỉ được dùng cho phiên phân tích này.</p>
+        </div>
+      </section>
+
+      <section class="result-section" id="result-section" hidden aria-live="polite">
+        <div class="section-rule"><span>Kết quả phân tích</span><span id="result-time">Vừa xong</span></div>
+        <div class="result-grid">
+          <div class="result-image-wrap">
+            <img id="result-image" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Ảnh đã phân tích" />
+            <span class="image-label">ẢNH ĐẦU VÀO</span>
+          </div>
+          <div class="result-copy">
+            <div class="result-status" id="result-status"><span class="result-status-dot"></span><span id="result-status-label">Đang xử lý</span></div>
+            <h2 id="result-title">Có dấu hiệu ngập trong ảnh</h2>
+            <p id="result-description">Mô hình nhận thấy các đặc điểm hình ảnh phù hợp với nhóm Flooding.</p>
+            <div class="confidence-block">
+              <div class="confidence-heading"><span>Độ tin cậy của mô hình</span><strong id="confidence-value">87%</strong></div>
+              <div class="confidence-track"><span id="confidence-bar"></span></div>
+              <div class="confidence-foot"><span>Flooding</span><span>No Flooding</span></div>
+            </div>
+            <div class="notice"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"></circle><path d="M10 9v4M10 6.5v.1"></path></svg><p>Kết quả chỉ mang tính tham khảo, không thay thế xác nhận tại hiện trường hoặc hướng dẫn của cơ quan chức năng.</p></div>
+            <div class="result-actions">
+              <button class="primary-button" id="new-analysis-button" type="button">Kiểm tra ảnh khác <span aria-hidden="true">↗</span></button>
+              <a class="text-button" href="#how-it-works">Xem cách hoạt động <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-section" id="how-it-works">
+        <div class="section-intro">
+          <p class="eyebrow">How it works</p>
+          <h2>Từ ảnh đến tín hiệu,<br /><em>trong ba bước.</em></h2>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">01</span>
+            <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="8" width="28" height="24" rx="3"></rect><circle cx="15" cy="16" r="2.5"></circle><path d="m9 28 7-7 5 5 4-4 6 6"></path></svg>
+            <h3>Cung cấp một ảnh</h3>
+            <p>Chọn ảnh hiện trường rõ nét từ điện thoại hoặc máy tính.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02</span>
+            <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5v30M5 20h30"></path><circle cx="20" cy="20" r="10"></circle><circle cx="20" cy="20" r="3"></circle></svg>
+            <h3>Mô hình phân tích</h3>
+            <p>Ảnh được so sánh với hai nhóm Flooding và No Flooding.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03</span>
+            <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 29V20M16 29V14M24 29V9M32 29V17"></path><path d="M6 33h28"></path></svg>
+            <h3>Đọc tín hiệu</h3>
+            <p>Xem lớp dự đoán và điểm tin cậy để có thêm một góc nhìn.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="model-section" id="model">
+        <div>
+          <p class="eyebrow">Model notes</p>
+          <h2>Minh bạch để<br /><em>ra quyết định tốt hơn.</em></h2>
+        </div>
+        <div class="model-notes">
+          <p>FloodLens hiện phân loại ảnh thành hai nhóm. Kết quả phụ thuộc vào chất lượng ảnh, góc chụp và bối cảnh — một ảnh mờ hoặc không liên quan có thể cho kết quả sai.</p>
+          <div class="model-meta"><span>Architecture</span><strong>MobileNet · Fine-tuned</strong><span>Input size</span><strong>224 × 224 px</strong></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>© 2026 FloodLens</span><span>Built for clearer signals after the storm.</span></footer>
+    <script src="app.js"></script>
+  </body>
+</html>
